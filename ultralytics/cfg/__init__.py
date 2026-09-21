@@ -262,6 +262,17 @@ CFG_INT_KEYS = frozenset(
         "line_width",
         "nbs",
         "save_period",
+        # perforated options
+        "n_epochs_to_switch",
+        "history_lookback",
+        "initial_history_after_switches",
+        "fixed_switch_num",
+        "first_fixed_switch_num",
+        "max_dendrites",
+        "max_dendrite_tries",
+        "plateau_patience",
+        "initial_correlation_batches",
+        "p_epochs_to_switch",
     }
 )
 CFG_INT_MIN = {  # minimum valid values for integer arguments used as counts, divisors, sizes or seeds
@@ -300,6 +311,24 @@ CFG_BOOL_KEYS = frozenset(
         "retina_masks",
         "show_boxes",
         "keras",
+        # perforated options
+        "perforate",
+        "testing_dendrite_capacity",
+        "reset_best_score_on_switch",
+        "retain_all_dendrites",
+        "candidate_weight_init_by_main",
+        "find_best_lr",
+        "dont_give_up_unless_learning_rate_lowered",
+        "pai_verbose",
+        "pai_extra_verbose",
+        "pai_silent",
+        "drawing_pai",
+        "drawing_extra_graphs",
+        "save_old_graph_scores",
+        "test_saves",
+        "using_safe_tensors",
+        "perforated_backpropagation",
+        "cap_at_n",
         "optimize",
         "dynamic",
         "simplify",
@@ -309,8 +338,8 @@ CFG_BOOL_KEYS = frozenset(
         "cls_remap",
     }
 )
-CFG_STR_KEYS = frozenset({"optimizer", "split", "copy_paste_mode", "auto_augment"})
-
+# perforated options
+CFG_STR_KEYS = frozenset({"optimizer", "split", "copy_paste_mode", "auto_augment", "switch_mode", "param_vals_setting"})
 
 def cfg2dict(cfg: str | Path | dict | SimpleNamespace) -> dict:
     """Convert a configuration object to a dictionary.
@@ -504,6 +533,8 @@ def check_cfg(cfg: dict, hard: bool = True) -> None:
                         f"'{k}' must be a bool or str (i.e. '{k}=True' or '{k}=max-autotune')"
                     )
                 cfg[k] = bool(v)
+            elif k == "perforate_modules" and isinstance(v, str):  # CLI 'perforate_modules=[a.b,c.d]' stays a string
+                cfg[k] = [s.strip(" '\"") for s in v.strip("[]").split(",") if s.strip(" '\"")]
             elif k == "amp":
                 if not isinstance(v, bool) and str(v).lower() not in {"fp16", "bf16", "fp32"}:
                     raise ValueError(

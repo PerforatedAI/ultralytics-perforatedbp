@@ -1,0 +1,43 @@
+model: yolo26n.pt
+data: examples/YOLO26-PerforatedAI-Python/cityscapes-det.yaml
+
+epochs: 2000
+batch: 48
+nbs: 64
+imgsz: 640
+workers: 8
+
+optimizer: AdamW
+lr0: 0.001
+lrf: 0.01
+warmup_bias_lr: 0.0
+weight_decay: 0.0
+
+patience: 48
+
+val: True
+
+amp: False
+close_mosaic: 0
+compile: False
+
+seed: 6502
+deterministic: False
+
+project: yolo26-cityscapes
+name: yolo26n_cityscapes
+exist_ok: False
+plots: True
+
+perforate_modules: [model.23.one2one_cv2.0.0, model.23.one2one_cv2.1.0, model.23.one2one_cv2.2.0]
+switch_mode: history
+n_epochs_to_switch: 15
+p_epochs_to_switch: 4
+max_dendrites: 3
+max_dendrite_tries: 2
+initial_correlation_batches: 50
+find_best_lr: True
+dont_give_up_unless_learning_rate_lowered: True
+plateau_patience: 6
+plateau_factor: 0.1
+plateau_threshold: 0.001
